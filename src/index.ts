@@ -1,8 +1,10 @@
-import fastify from 'fastify'
+import fastify, { FastifyRequest, FastifyReply } from 'fastify'
+
+import { userRoutes } from './features/users/routes'
 
 const server = fastify()
 
-server.get('/ping', async (request, reply) => {
+server.get('/ping', async (request: FastifyRequest, reply: FastifyReply) => {
     return 'pong\n'
 })
 
@@ -13,3 +15,6 @@ server.listen({ port: 8080 }, (err, address) => {
     }
     console.log(`Server listening at ${address}`)
 })
+
+// Routes
+server.register(userRoutes, { prefix: 'v1/users' })
