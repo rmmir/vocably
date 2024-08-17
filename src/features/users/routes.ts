@@ -1,5 +1,6 @@
 import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify'
 import { $ref } from './schema'
+import { createUserHandler } from './handlers'
 
 export async function userRoutes(server: FastifyInstance) {
     server.get('/', (request: FastifyRequest, reply: FastifyReply) => {
@@ -16,7 +17,7 @@ export async function userRoutes(server: FastifyInstance) {
                 },
             },
         },
-        () => {}
+        createUserHandler
     )
 
     server.post(
