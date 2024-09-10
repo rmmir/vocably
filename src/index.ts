@@ -17,7 +17,10 @@ app.listen({ port: 8080 }, (err, address) => {
 
 // JWT & Cookies setup
 app.register(fjwt, { secret: process.env.JWT_SECRET || 'fallback' })
-app.addHook('preHandler', (request: FastifyRequest, reply: FastifyReply) => request.jwt = app.jwt)
+app.addHook('preHandler', (request: FastifyRequest, reply: FastifyReply, done) => {
+     request.jwt = app.jwt
+     done()
+})
 app.register(fCookie, { secret: process.env.COOKIE_SECRET || 'fallback', hook: 'preHandler'})
 
 // Routes

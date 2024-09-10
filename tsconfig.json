@@ -13,6 +13,6 @@
         "inlineSourceMap": true,
         "inlineSources": true
     },
-    "include": ["src", "src/prisma"],
+    "include": ["src/**/*.ts", "src/prisma"],
     "exclude": ["node_modules", "dist"]
 }
