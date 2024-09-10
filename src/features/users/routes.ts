@@ -1,10 +1,10 @@
 import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify'
 import { $ref } from './schema'
-import { createUserHandler } from './handlers'
+import { authenticateUserHandler, createUserHandler } from './handlers'
 
 export async function userRoutes(server: FastifyInstance) {
     server.get('/', (request: FastifyRequest, reply: FastifyReply) => {
-        reply.send({ message: 'user/ route hit' })
+        reply.send({ message: 'users/ route hit' })
     })
 
     server.post(
@@ -30,7 +30,7 @@ export async function userRoutes(server: FastifyInstance) {
                 },
             },
         },
-        () => {}
+        authenticateUserHandler
     )
 
     server.delete('/logout', () => {})
