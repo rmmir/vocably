@@ -40,4 +40,4 @@ export const { schemas: userSchemas, $ref } = buildJsonSchemas({
     createUserReplySchema,
     loginUserSchema,
     loginUserReplySchema
-})
+}, { $id: 'userSchema' })

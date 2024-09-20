@@ -2,8 +2,14 @@ import fastify, { FastifyRequest, FastifyReply } from 'fastify'
 import fjwt from '@fastify/jwt'
 import fCookie from '@fastify/cookie'
 
-import { userRoutes } from './features/users/routes'
-import { userSchemas } from './features/users/schema'
+import { 
+    userRoutes,
+    languageRoutes,
+    wordRoutes,
+    userSchemas,
+    languageSchemas,
+    wordSchemas,
+} from './features/index'
 
 const app = fastify({ logger: true })
 
@@ -25,8 +31,16 @@ app.register(fCookie, { secret: process.env.COOKIE_SECRET || 'fallback', hook: '
 
 // Routes
 app.register(userRoutes, { prefix: 'v1/users' })
+app.register(languageRoutes, { prefix: 'v1/languages' })
+app.register(wordRoutes, { prefix: 'v1/words' })
 
 // Schemas
-for (let schema of [...userSchemas]) {
+const allSchemas = [
+    ...userSchemas,
+    ...languageSchemas,
+    ...wordSchemas,
+]
+
+for (let schema of allSchemas) {
     app.addSchema(schema)
 }
