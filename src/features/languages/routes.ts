@@ -1,5 +1,5 @@
 import { FastifyInstance } from 'fastify'
-import { $ref } from './schema'
+import { $ref, CreateLanguageInput } from './schema'
 import { createLanguage, deleteLanguage, editLanguage, getLanguageById, getLanguages } from './handlers'
 import { ParamsWithId } from '../../models/params'
 
@@ -8,9 +8,8 @@ export async function languageRoutes(server: FastifyInstance) {
 
     server.get<ParamsWithId>('/:id', { preValidation: [server.authenticate] }, getLanguageById)
 
-    server.post(
-        '/create',
-        
+    server.post<{ Body: CreateLanguageInput }>(
+        '/',
         {
             schema: {
                 body: $ref('createLanguageSchema'),

@@ -7,4 +7,14 @@ declare module 'fastify' {
             reply: FastifyReply
         ) => Promise<void>
     }
+
+    interface FastifyRequest {
+        user: JwtPayload
+        jwt: JWT
+    }
+}
+
+interface JwtPayload {
+    userId: string
+    username: string
 }
