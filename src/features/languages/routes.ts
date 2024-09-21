@@ -1,22 +1,16 @@
-import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify'
+import { FastifyInstance } from 'fastify'
 import { $ref } from './schema'
-
-interface Params {
-    id: string;
-}
+import { createLanguage, deleteLanguage, editLanguage, getLanguageById, getLanguages } from './handlers'
+import { ParamsWithId } from '../../models/params'
 
 export async function languageRoutes(server: FastifyInstance) {
-    server.get('/', (request: FastifyRequest, reply: FastifyReply) => {
-        reply.send({ message: 'languages/ route hit' })
-    })
+    server.get('/', { preValidation: [server.authenticate] }, getLanguages)
 
-    server.get('/:id',  (request: FastifyRequest<{Params: Params}>, reply: FastifyReply) => {
-        const { id } = request.params
-        reply.send({ message: `languages/${id} route hit` })
-    })
+    server.get<ParamsWithId>('/:id', { preValidation: [server.authenticate] }, getLanguageById)
 
     server.post(
         '/create',
+        
         {
             schema: {
                 body: $ref('createLanguageSchema'),
@@ -24,11 +18,12 @@ export async function languageRoutes(server: FastifyInstance) {
                     201: $ref('createLanguageReplySchema'),
                 },
             },
+            preValidation: [server.authenticate]
         },
-        () => {}
+        createLanguage
     )
 
-    server.patch(
+    server.patch<ParamsWithId>(
         '/:id',
         {
             schema: {
@@ -37,9 +32,10 @@ export async function languageRoutes(server: FastifyInstance) {
                     201: $ref('editLanguageReplySchema'),
                 },
             },
+            preValidation: [server.authenticate]
         },
-        () => {}
+        editLanguage
     )
 
-    server.delete('/:id', () => {})
+    server.delete<ParamsWithId>('/:id', { preValidation: [server.authenticate] }, deleteLanguage)
 }

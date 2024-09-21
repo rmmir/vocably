@@ -1,21 +1,21 @@
-import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify'
+import { FastifyInstance } from 'fastify'
 import { $ref } from './schema'
-
-interface Params {
-    id: string
-}
+import { ParamsWithId } from '../../models/params'
+import {
+    createWord,
+    deleteWord,
+    editWord,
+    getWordById,
+    getWords,
+} from './handlers'
 
 export async function wordRoutes(server: FastifyInstance) {
-    server.get('/', (request: FastifyRequest, reply: FastifyReply) => {
-        reply.send({ message: 'words/ route hit' })
-    })
+    server.get('/', { preValidation: [server.authenticate] }, getWords)
 
-    server.get(
+    server.get<ParamsWithId>(
         '/:id',
-        (request: FastifyRequest<{ Params: Params }>, reply: FastifyReply) => {
-            const { id } = request.params
-            reply.send({ message: `words/${id} route hit` })
-        }
+        { preValidation: [server.authenticate] },
+        getWordById
     )
 
     server.post(
@@ -27,11 +27,12 @@ export async function wordRoutes(server: FastifyInstance) {
                     201: $ref('createWordReplySchema'),
                 },
             },
+            preValidation: [server.authenticate],
         },
-        () => {}
+        createWord
     )
 
-    server.patch(
+    server.patch<ParamsWithId>(
         '/:id',
         {
             schema: {
@@ -40,9 +41,14 @@ export async function wordRoutes(server: FastifyInstance) {
                     201: $ref('editWordReplySchema'),
                 },
             },
+            preValidation: [server.authenticate],
         },
-        () => {}
+        editWord
     )
 
-    server.delete('/:id', () => {})
+    server.delete<ParamsWithId>(
+        '/:id',
+        { preValidation: [server.authenticate] },
+        deleteWord
+    )
 }
